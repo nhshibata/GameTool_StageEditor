@@ -64,6 +64,7 @@
                 <CheckBox
                     Grid.Row="0"
                     Grid.Column="1"
+                    Checked="Scroll_Box"
                     IsChecked="{Binding BViewMode}" />
                 <!--  パネルサイズ  -->
                 <Label
@@ -101,10 +102,11 @@
                     Grid.Column="0"
                     Grid.ColumnSpan="2"
                     Padding="10"
-                    Click="Button_Click"
+                    Click="WriteJson"
                     Content="json出力" />
                 <!--  csvフォルダ  -->
                 <TextBox
+                    x:Name="CSVPathName"
                     Grid.Row="6"
                     Grid.Column="0"
                     AcceptsReturn="True"
@@ -112,13 +114,13 @@
                 <Button
                     Grid.Row="6"
                     Grid.Column="1"
-                    Click="Button_Click_4"
+                    Click="DialogOpen"
                     Content="CSV File Reference" />
                 <Button
                     Grid.Row="7"
                     Grid.Column="0"
                     Grid.ColumnSpan="2"
-                    Click="Button_Click_3"
+                    Click="CSVWrite"
                     Content="csv出力" />
                 <!--  空白を作る  -->
                 <Label
@@ -184,7 +186,7 @@
 
                     <Grid.RowDefinitions>
                         <RowDefinition Height="30" />
-                        <RowDefinition Height="30" />
+                        <RowDefinition />
                         <RowDefinition Height="30" />
                     </Grid.RowDefinitions>
 

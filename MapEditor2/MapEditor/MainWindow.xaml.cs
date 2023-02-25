@@ -37,11 +37,15 @@ namespace MapEditor
         /// <param name="e">no</param>
         private void Window_ContentRendered(object sender, EventArgs e)
         {
+            // 初期サイズ保存
+            ViewOperation.m_instance.m_fStartMapWidth = gridOrder.RenderSize.Width;
+            ViewOperation.m_instance.m_fStartMapHeight = gridOrder.RenderSize.Height;
+
             // jsonが読みこまれているのでサイズ調整
             GridRowResize(ToolSetting.m_instance.m_nPanelW);
             GridColumnResize(ToolSetting.m_instance.m_nPanelH);
 
-            GridUnitType type = ViewOperation.m_instance.m_bViewMode ? GridUnitType.Auto : GridUnitType.Pixel;
+            GridUnitType type = ViewOperation.m_instance.m_bViewMode ? GridUnitType.Star : GridUnitType.Pixel;
             int gridSize = ViewOperation.m_instance.m_bViewMode ? 1 : ToolSetting.m_instance.m_nGridSize;
             foreach (RowDefinition item in myGrid.RowDefinitions)
             {
@@ -112,7 +116,7 @@ namespace MapEditor
 
             // ドロップされた位置を計算
             Point pos = e.GetPosition(grid); // gridコントロール内の位置を取得
-            if (ViewOperation.m_instance.m_bViewMode)
+            if (!ViewOperation.m_instance.m_bViewMode)
             {
                 width = gridScroll.ViewportWidth;       // 横方向のサイズ
                 height = gridScroll.ViewportHeight;     // 縦方向のサイズ
@@ -180,9 +184,16 @@ namespace MapEditor
             }
         }
 
+        /// <summary>
+        /// 全グリッドPixelサイズ調整
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void TextBox_IsKeyboardFocusedChanged_2(object sender, DependencyPropertyChangedEventArgs e)
         {
             if (myGrid == null)
+                return;
+            if (ViewOperation.m_instance.m_bViewMode)
                 return;
 
             foreach (RowDefinition item in myGrid.RowDefinitions)
@@ -196,6 +207,11 @@ namespace MapEditor
             }
         }
 
+        /// <summary>
+        /// サイズ変更時
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MyGrid_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             float cellWidth = (float)gridOrder.RenderSize.Width /ToolSetting.m_instance.m_nPanelW;
@@ -207,9 +223,6 @@ namespace MapEditor
             {
                 // 横幅に合わせて、横幅を短くする
                 cellWidth = cellHeight;
-
-                //myGrid.Width = gridOrder.RenderSize.Height;
-                //myGrid.Height = myGrid.Width;
             }
 
             //--- 縦幅が長いパターン
@@ -218,8 +231,6 @@ namespace MapEditor
             {
                 // 横幅に合わせて、横幅を短くする
                 cellHeight = cellWidth;
-                //myGrid.Height = gridOrder.RenderSize.Width;
-                //myGrid.Width = myGrid.Height;
             }
 
             if (ViewOperation.m_instance.m_bViewMode)
@@ -227,9 +238,22 @@ namespace MapEditor
                 myGrid.Width = cellWidth * ToolSetting.m_instance.m_nPanelW;
                 myGrid.Height = cellHeight * ToolSetting.m_instance.m_nPanelH;
             }
+            else
+            {
+                //myGrid.Width = gridOrder.RenderSize.Width;
+                //myGrid.Height = gridOrder.RenderSize.Height;
+                //gridScroll.Width = ToolSetting.m_instance.m_nGridSize * ToolSetting.m_instance.m_nPanelW;
+                //gridScroll.Height = ToolSetting.m_instance.m_nGridSize * ToolSetting.m_instance.m_nPanelH;
+                float width = ToolSetting.m_instance.m_nGridSize * ToolSetting.m_instance.m_nPanelW;
+                float height = ToolSetting.m_instance.m_nGridSize * ToolSetting.m_instance.m_nPanelH;
+                // 規定値よりサイズを小さくしない
+                myGrid.Width = width < ViewOperation.m_instance.m_fStartMapWidth ? ViewOperation.m_instance.m_fStartMapWidth : width;
+                myGrid.Height = height < ViewOperation.m_instance.m_fStartMapHeight ? ViewOperation.m_instance.m_fStartMapHeight : height;
+            }
+
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void WriteJson(object sender, RoutedEventArgs e)
         {
             MapData data = new MapData();
             // パネルの大きさ
@@ -269,13 +293,11 @@ namespace MapEditor
                     }
                     break;
                 }
-
             }
 
             //--- ﾃﾞｰﾀの出力
             data.Write();
             MessageBox.Show("jsonを出力しました");
-
         }
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
@@ -349,7 +371,6 @@ namespace MapEditor
                         --i;
                     }
                 }
-
             }
 
             // 枠の数を増やす
@@ -359,7 +380,7 @@ namespace MapEditor
                 {
                     ColumnDefinition cd = new ColumnDefinition();
                     if(ViewOperation.m_instance.m_bViewMode)
-                        cd.Width = new GridLength(1.0f, GridUnitType.Auto);
+                        cd.Width = new GridLength(1.0f, GridUnitType.Star);
                     else
                         cd.Width = new GridLength(ToolSetting.m_instance.m_nGridSize, GridUnitType.Pixel);
                     myGrid.ColumnDefinitions.Add(cd);
@@ -412,11 +433,10 @@ namespace MapEditor
                 {
                     RowDefinition cd = new RowDefinition();
                     if(ViewOperation.m_instance.m_bViewMode)
-                        cd.Height = new GridLength(1.0f, GridUnitType.Auto);
+                        cd.Height = new GridLength(1.0f, GridUnitType.Star);
                     else
                         cd.Height = new GridLength(ToolSetting.m_instance.m_nGridSize, GridUnitType.Pixel);
                     myGrid.RowDefinitions.Add(cd);
-
                 }
 
                 // 必要な数のImageを追加
@@ -435,7 +455,7 @@ namespace MapEditor
             }
         }
 
-        private void Button_Click_3(object sender, RoutedEventArgs e)
+        private void CSVWrite(object sender, RoutedEventArgs e)
         {
             csvData data = new csvData(ToolSetting.m_instance.csvFile);
 
@@ -496,7 +516,6 @@ namespace MapEditor
 
                     break;
                 }
-
             }
 
             //--- ﾃﾞｰﾀの出力
@@ -504,12 +523,16 @@ namespace MapEditor
             MessageBox.Show("csvを出力しました");
         }
 
-        private void Button_Click_4(object sender, RoutedEventArgs e)
+        private void DialogOpen(object sender, RoutedEventArgs e)
         {
             DispDialog dd = new DispDialog();
             var path = dd.OpenDialog();
-            if(path != null)
+            if (path != null)
+            {
                 ToolSetting.m_instance.csvFile = path;
+                // xamlにも反映
+                CSVPathName.Text = path;
+            }
         }
 
         private void ImageList_PreviewMouseUp(object sender, MouseButtonEventArgs e)
@@ -540,7 +563,7 @@ namespace MapEditor
             double height = grid.RenderSize.Height;     // 縦方向のサイズ
 
             Point pos = e.GetPosition(grid); // gridコントロール内の位置を取得
-            if (ViewOperation.m_instance.m_bViewMode)
+            if (!ViewOperation.m_instance.m_bViewMode)
             {
                 width = gridScroll.ViewportWidth;       // 横方向のサイズ
                 height = gridScroll.ViewportHeight;     // 縦方向のサイズ
@@ -583,5 +606,10 @@ namespace MapEditor
 
         }
 
+        private void Scroll_Box(object sender, RoutedEventArgs e)
+        {
+            MyGrid_SizeChanged(null, null);
+
+        }
     }
 }
