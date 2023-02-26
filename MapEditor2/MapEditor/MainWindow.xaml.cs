@@ -60,6 +60,12 @@ namespace MapEditor
             TextureLoad textureLoad = new TextureLoad();
             textureLoad.Init(myTab, ImageList.Items);
 
+            foreach (var item in ImageList.Items)
+            {
+                Image image = item as Image;
+                image.PreviewMouseLeftButtonUp += Image_PreviewMouseLeftButtonUp;
+            }
+
             foreach (var item in myTab.Items)
             {
                 var tabItem = item as DynamicTabItem;
@@ -67,8 +73,14 @@ namespace MapEditor
                     continue;
 
                 ListView listView = tabItem.GetChild() as ListView;
-                listView.PreviewMouseUp += ImageList_PreviewMouseUp;
                 listView.PreviewMouseMove += ListView_PreviewMouseMove;
+
+                foreach (var i in listView.Items)
+                {
+                    Image image = i as Image;
+                    if(image != null)
+                        image.PreviewMouseLeftButtonUp += Image_PreviewMouseLeftButtonUp;
+                }
             } 
 
         }
@@ -451,8 +463,8 @@ namespace MapEditor
                         myGrid.Children.Add(img);
                     }
                 }
-
             }
+
         }
 
         private void CSVWrite(object sender, RoutedEventArgs e)
@@ -485,7 +497,7 @@ namespace MapEditor
                     }
 
                     // 一致するイメージソース探索
-                    int imageIdx = -1;
+                    int imageIdx = 0;
                     for (int j = 0; j < ImageList.Items.Count; j++)
                     {
                         if ((ImageList.Items[j] as Image).Source == item.Source)
@@ -535,9 +547,20 @@ namespace MapEditor
             }
         }
 
-        private void ImageList_PreviewMouseUp(object sender, MouseButtonEventArgs e)
+        private void Image_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            ViewOperation.m_instance.m_nSelect = ImageList.SelectedIndex;
+            Image image = sender as Image;
+            for (int i = 0; i < ImageList.Items.Count; i++)
+            {
+                Image item = ImageList.Items[i] as Image;
+                if (item.Source == image.Source)
+                {
+                    ViewOperation.m_instance.m_nSelect = i;
+                    MySelectIndex.Content = i.ToString();
+                    break;
+                }
+            }
+            
         }
 
         private void MyGrid_MouseMove(object sender, MouseEventArgs e)
@@ -611,5 +634,6 @@ namespace MapEditor
             MyGrid_SizeChanged(null, null);
 
         }
+
     }
 }

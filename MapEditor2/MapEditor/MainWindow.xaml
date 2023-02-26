@@ -108,12 +108,13 @@
                 <TextBox
                     x:Name="CSVPathName"
                     Grid.Row="6"
-                    Grid.Column="0"
+                    Grid.Column="1"
                     AcceptsReturn="True"
-                    Text="{Binding CSVFolderPath}" />
+                    Text="{Binding CSVFolderPath}"
+                    TextWrapping="Wrap" />
                 <Button
                     Grid.Row="6"
-                    Grid.Column="1"
+                    Grid.Column="0"
                     Click="DialogOpen"
                     Content="CSV File Reference" />
                 <Button
@@ -146,7 +147,7 @@
                     Text="{Binding ExeFolderPath, UpdateSourceTrigger=PropertyChanged}"
                     TextWrapping="Wrap" />
                 <Button
-                    Grid.Row="10"
+                    Grid.Row="11"
                     Grid.Column="0"
                     Grid.ColumnSpan="4"
                     Click="Button_Click_1"
@@ -234,7 +235,6 @@
                             Grid.Row="0"
                             Grid.Column="0"
                             PreviewMouseMove="ListView_PreviewMouseMove"
-                            PreviewMouseUp="ImageList_PreviewMouseUp"
                             ScrollViewer.HorizontalScrollBarVisibility="Visible">
                             <!--<Image
                                 Width="50"
@@ -303,38 +303,51 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
                     <Label
                         Grid.Row="0"
                         Grid.Column="0"
                         HorizontalAlignment="Right"
+                        Content="ImageSelectIndex" />
+                    <Label
+                        x:Name="MySelectIndex"
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        HorizontalAlignment="Left"
+                        Content="0" />
+
+                    <Label
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        HorizontalAlignment="Right"
                         Content="TextBox" />
                     <TextBox
-                        Grid.Row="0"
+                        Grid.Row="1"
                         Grid.Column="1"
                         Padding="0,2"
                         VerticalAlignment="Center"
                         Text="{Binding Name}" />
 
                     <Label
-                        Grid.Row="1"
+                        Grid.Row="2"
                         Grid.Column="0"
                         HorizontalAlignment="Right"
                         Content="CheckBox" />
                     <CheckBox
-                        Grid.Row="1"
+                        Grid.Row="2"
                         Grid.Column="1"
                         VerticalAlignment="Center"
                         IsChecked="{Binding BEnable}" />
 
                     <Label
-                        Grid.Row="2"
+                        Grid.Row="3"
                         Grid.Column="0"
                         HorizontalAlignment="{Binding HorizontalAlignment1}"
                         Content="ComboBox" />
                     <ComboBox
-                        Grid.Row="2"
+                        Grid.Row="3"
                         Grid.Column="1"
                         SelectedIndex="{Binding Kind}">
                         <ComboBoxItem Content="ラーメン" />
@@ -344,12 +357,12 @@
                     </ComboBox>
 
                     <Label
-                        Grid.Row="3"
+                        Grid.Row="4"
                         Grid.Column="0"
                         HorizontalAlignment="Right"
                         Content="Comand" />
                     <Button
-                        Grid.Row="3"
+                        Grid.Row="4"
                         Grid.Column="1"
                         Margin="2"
                         Padding="10,2"
