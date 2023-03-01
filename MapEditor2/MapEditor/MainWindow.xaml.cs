@@ -42,8 +42,10 @@ namespace MapEditor
             ViewOperation.m_instance.m_fStartMapHeight = gridOrder.RenderSize.Height;
 
             // jsonが読みこまれているのでサイズ調整
-            GridRowResize(ToolSetting.m_instance.m_nPanelW);
-            GridColumnResize(ToolSetting.m_instance.m_nPanelH);
+            GridRowResize(0);
+            // jsonが読みこまれているのでサイズ調整
+            GridRowResize(ToolSetting.m_instance.m_nPanelH);
+            GridColumnResize(ToolSetting.m_instance.m_nPanelW);
 
             GridUnitType type = ViewOperation.m_instance.m_bViewMode ? GridUnitType.Star : GridUnitType.Pixel;
             int gridSize = ViewOperation.m_instance.m_bViewMode ? 1 : ToolSetting.m_instance.m_nGridSize;
@@ -252,10 +254,6 @@ namespace MapEditor
             }
             else
             {
-                //myGrid.Width = gridOrder.RenderSize.Width;
-                //myGrid.Height = gridOrder.RenderSize.Height;
-                //gridScroll.Width = ToolSetting.m_instance.m_nGridSize * ToolSetting.m_instance.m_nPanelW;
-                //gridScroll.Height = ToolSetting.m_instance.m_nGridSize * ToolSetting.m_instance.m_nPanelH;
                 float width = ToolSetting.m_instance.m_nGridSize * ToolSetting.m_instance.m_nPanelW;
                 float height = ToolSetting.m_instance.m_nGridSize * ToolSetting.m_instance.m_nPanelH;
                 // 規定値よりサイズを小さくしない
@@ -322,7 +320,7 @@ namespace MapEditor
             if(fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 // 選択されているパス表示
-                FolderPath.Text = fbd.SelectedPath;
+                //FolderPath.Text = fbd.SelectedPath;
             }
 
         }
@@ -369,6 +367,9 @@ namespace MapEditor
             int newColumn = size;
             int oldColumn = myGrid.ColumnDefinitions.Count;
 
+            // 行番号表示分増やす
+            newColumn = newColumn == 0 ? 0 : newColumn + 1;
+
             // 枠の数が減る
             if (newColumn < oldColumn)
             {
@@ -414,7 +415,7 @@ namespace MapEditor
         }
 
         /// <summary>
-        /// グリッド行修正
+        /// グリッド行修正追加
         /// </summary>
         /// <param name="size"></param>
         private void GridRowResize(int size)
@@ -457,12 +458,51 @@ namespace MapEditor
                 {
                     for (int j = 0; j < columnNum; j++)
                     {   // 添付プロパティの設定
+                        if (j == 0)
+                        {
+                            TextBox text = new TextBox();
+                            text.SetValue(Grid.ColumnProperty, j);
+                            text.SetValue(Grid.RowProperty, i);
+                            text.Text = "行" + i.ToString();
+                            myGrid.Children.Add(text);
+                            continue;
+                        }
                         Image img = new Image();
                         img.SetValue(Grid.ColumnProperty, j);
                         img.SetValue(Grid.RowProperty, i);
                         myGrid.Children.Add(img);
                     }
                 }
+
+
+                //for (int i = size; 0 < i; --i)
+                //for (int i = 0; i < size; ++i)
+                //{
+                //    int rowIndex1 = i + 1; // 入れ替える1つ目の行のIndex
+                //    int rowIndex2 = i; // 入れ替える2つ目の行のIndex
+
+                //    foreach (UIElement child in myGrid.Children)
+                //    {
+                //        int row = (int)child.GetValue(Grid.RowProperty);
+                //        if (row == rowIndex1)
+                //        {
+                //            child.SetValue(Grid.RowProperty, rowIndex2); // 1つ目の行の要素の行を2つ目の行に変更
+                //        }
+                //        else if (row == rowIndex2)
+                //        {
+                //            child.SetValue(Grid.RowProperty, rowIndex1); // 2つ目の行の要素の行を1つ目の行に変更
+                //        }
+
+                //        TextBox text = child as TextBox;
+                //        if (text == null)
+                //            continue;
+                //        row = (int)child.GetValue(Grid.RowProperty);
+                //        text.Text = row.ToString();
+
+                //    }
+                //}
+                
+
             }
 
         }
@@ -488,10 +528,14 @@ namespace MapEditor
                 int y = i / width;
 
                 // グリッドの中から該当のデータを探索
-                foreach (Image item in myGrid.Children)
+                foreach (UIElement item in myGrid.Children)
                 {
+                    Image img = item as Image;
+                    if (img == null)
+                        continue;
+
                     // imgeListの並び順を番号として設定
-                    if (x != (int)item.GetValue(Grid.ColumnProperty) || y != (int)item.GetValue(Grid.RowProperty))
+                    if (x != (int)img.GetValue(Grid.ColumnProperty) || y != (int)img.GetValue(Grid.RowProperty))
                     {
                         continue;
                     }
@@ -500,7 +544,7 @@ namespace MapEditor
                     int imageIdx = 0;
                     for (int j = 0; j < ImageList.Items.Count; j++)
                     {
-                        if ((ImageList.Items[j] as Image).Source == item.Source)
+                        if ((ImageList.Items[j] as Image).Source == img.Source)
                         {
                             // 保存し、離脱
                             imageIdx = j;
@@ -508,7 +552,7 @@ namespace MapEditor
                         }
                     }
                     // 見つかっていなければ0格納
-                    line.Add(string.Concat(",", imageIdx));
+                    line.Add(string.Concat(',', imageIdx));
 
                     // 行の終わりか確認
                     if ((i + 1) % width == 0)
@@ -531,8 +575,12 @@ namespace MapEditor
             }
 
             //--- ﾃﾞｰﾀの出力
-            data.Write();
-            MessageBox.Show("csvを出力しました");
+            if(data.Write())
+            {
+                MessageBox.Show("csvを出力しました");
+            }
+            else
+                MessageBox.Show("ファイルがないか、データがありません");
         }
 
         private void DialogOpen(object sender, RoutedEventArgs e)
@@ -632,8 +680,50 @@ namespace MapEditor
         private void Scroll_Box(object sender, RoutedEventArgs e)
         {
             MyGrid_SizeChanged(null, null);
+        }
+
+        private void CSVLoad(object sender, RoutedEventArgs e)
+        {
+            DispDialog dd = new DispDialog();
+            var path = dd.OpenDialog();
+            if (path == null)
+            {
+                MessageBox.Show("path error");
+                return;
+            }
+
+            csvData csvData = new csvData(path);
+            List<List<string>> data = csvData.Load(path);
+
+            ToolSetting.m_instance.m_nPanelH = data.Count;
+            ToolSetting.m_instance.m_nPanelW = data[0].Count();
+            // jsonが読みこまれているのでサイズ調整
+            GridRowResize(ToolSetting.m_instance.m_nPanelH);
+            GridColumnResize(ToolSetting.m_instance.m_nPanelW);
+
+            foreach (UIElement child in myGrid.Children)
+            {
+                int row = (int)child.GetValue(Grid.RowProperty);
+                int column = (int)child.GetValue(Grid.ColumnProperty);
+                column -= 1;
+
+                Image image = child as Image;
+                if(image != null)
+                {
+                    int idx = int.Parse(data[row][column].ToString());
+                    Image texture = ImageList.Items[idx] as Image;
+                    image.Source = texture.Source;
+                }
+
+                TextBox text = child as TextBox;
+                if (text == null)
+                    continue;
+                row = (int)child.GetValue(Grid.RowProperty);
+                text.Text = row.ToString();
+            }
 
         }
 
     }
+
 }

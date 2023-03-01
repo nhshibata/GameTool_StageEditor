@@ -5,7 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:MapEditor"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Title="初ツール"
+    Title="ステージ用ツール"
     Width="1080"
     Height="640"
     ContentRendered="Window_ContentRendered"
@@ -13,6 +13,15 @@
     <Window.DataContext>
         <local:MainWindowVM />
     </Window.DataContext>
+
+    <!--  分割したxamlと結合  -->
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Dictionary1.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
 
     <!--  大枠グリッド格子分け  -->
     <Grid>
@@ -35,123 +44,173 @@
             Grid.Column="0"
             BorderBrush="LightGray"
             BorderThickness="0,0,1,0">
+
             <Grid>
-                <!--  各グリッド  -->
+                <!--  比率  -->
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="20" />
-                    <RowDefinition Height="20" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                <!--  パネル状態  -->
-                <Label
-                    Grid.Row="0"
-                    Grid.Column="0"
-                    Content="View Scroll" />
-                <CheckBox
-                    Grid.Row="0"
-                    Grid.Column="1"
-                    Checked="Scroll_Box"
-                    IsChecked="{Binding BViewMode}" />
-                <!--  パネルサイズ  -->
-                <Label
-                    Grid.Row="1"
-                    Grid.Column="0"
-                    Content="PanelWidth" />
-                <TextBox
-                    Grid.Row="1"
-                    Grid.Column="1"
-                    IsKeyboardFocusedChanged="TextBox_IsKeyboardFocusedChanged"
-                    Text="{Binding PanelWidth}" />
-                <Label
-                    Grid.Row="2"
-                    Grid.Column="0"
-                    Content="PanelHeight" />
-                <TextBox
-                    Grid.Row="2"
-                    Grid.Column="1"
-                    IsKeyboardFocusedChanged="TextBox_IsKeyboardFocusedChanged_1"
-                    Text="{Binding PanelHeight}" />
-                <!--  マップチップ表示サイズ  -->
-                <Label
-                    Grid.Row="3"
-                    Grid.Column="0"
-                    Content="MapGridSize" />
-                <TextBox
-                    Grid.Row="3"
-                    Grid.Column="1"
-                    IsKeyboardFocusedChanged="TextBox_IsKeyboardFocusedChanged_2"
-                    Text="{Binding MapGridSize}" />
 
-                <!--  jsonファイル出力  -->
-                <Button
-                    Grid.Row="5"
-                    Grid.Column="0"
-                    Grid.ColumnSpan="2"
-                    Padding="10"
-                    Click="WriteJson"
-                    Content="json出力" />
-                <!--  csvフォルダ  -->
-                <TextBox
-                    x:Name="CSVPathName"
-                    Grid.Row="6"
-                    Grid.Column="1"
-                    AcceptsReturn="True"
-                    Text="{Binding CSVFolderPath}"
-                    TextWrapping="Wrap" />
-                <Button
-                    Grid.Row="6"
-                    Grid.Column="0"
-                    Click="DialogOpen"
-                    Content="CSV File Reference" />
-                <Button
-                    Grid.Row="7"
-                    Grid.Column="0"
-                    Grid.ColumnSpan="2"
-                    Click="CSVWrite"
-                    Content="csv出力" />
-                <!--  空白を作る  -->
-                <Label
-                    Grid.Row="8"
-                    Grid.Column="0"
-                    Padding="10" />
-                <!--  外部Application  -->
-                <Label
-                    Grid.Row="9"
-                    Grid.Column="0"
-                    Content="exe FolderPath" />
-                <Button
-                    Grid.Row="9"
-                    Grid.Column="1"
-                    Click="Button_Click_2"
-                    Content="exe File Reference" />
-                <!--  入力  -->
-                <TextBox
-                    x:Name="FolderPath"
-                    Grid.Row="10"
-                    Grid.Column="1"
-                    AcceptsReturn="True"
-                    Text="{Binding ExeFolderPath, UpdateSourceTrigger=PropertyChanged}"
-                    TextWrapping="Wrap" />
-                <Button
-                    Grid.Row="11"
-                    Grid.Column="0"
-                    Grid.ColumnSpan="4"
-                    Click="Button_Click_1"
-                    Content="exe" />
+                <Grid Grid.Row="0" Grid.Column="1">
+                    <!--  各グリッド  -->
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <!--  パネル状態  -->
+                    <Label
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        Content="View Scroll" />
+                    <CheckBox
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        VerticalAlignment="Center"
+                        Checked="Scroll_Box"
+                        IsChecked="{Binding BViewMode}"
+                        Style="{StaticResource CheckBoxStyle}" />
+                    <!--  パネルサイズ  -->
+                    <Label
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        Content="PanelWidth" />
+                    <TextBox
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        IsKeyboardFocusedChanged="TextBox_IsKeyboardFocusedChanged"
+                        Text="{Binding PanelWidth}" />
+                    <Label
+                        Grid.Row="2"
+                        Grid.Column="0"
+                        Content="PanelHeight" />
+                    <TextBox
+                        Grid.Row="2"
+                        Grid.Column="1"
+                        IsKeyboardFocusedChanged="TextBox_IsKeyboardFocusedChanged_1"
+                        Text="{Binding PanelHeight}" />
+                    <!--  マップチップ表示サイズ  -->
+                    <Label
+                        Grid.Row="3"
+                        Grid.Column="0"
+                        Content="MapGridSize" />
+                    <TextBox
+                        Grid.Row="3"
+                        Grid.Column="1"
+                        IsKeyboardFocusedChanged="TextBox_IsKeyboardFocusedChanged_2"
+                        Text="{Binding MapGridSize}" />
+
+                    <!--  jsonファイル出力  -->
+                    <Button
+                        Grid.Row="5"
+                        Grid.Column="0"
+                        Grid.ColumnSpan="2"
+                        Padding="5"
+                        Click="WriteJson"
+                        Content="json出力"
+                        Style="{StaticResource GreenButton}" />
+                    <!--  csvフォルダ  -->
+                    <TextBox
+                        x:Name="CSVPathName"
+                        Grid.Row="7"
+                        Grid.Column="1"
+                        Height="50"
+                        Margin="0,5,0,5"
+                        AcceptsReturn="True"
+                        Text="{Binding CSVFolderPath}"
+                        TextWrapping="Wrap" />
+                    <Button
+                        Grid.Row="7"
+                        Grid.Column="0"
+                        Margin="5"
+                        Padding="3"
+                        Click="DialogOpen"
+                        Content="CSV File Reference" />
+                    <Button
+                        Grid.Row="8"
+                        Grid.Column="0"
+                        Grid.ColumnSpan="2"
+                        Margin="0,0,0,5"
+                        Padding="2"
+                        Click="CSVWrite"
+                        Content="csv出力"
+                        Style="{StaticResource GreenButton}" />
+                    <Button
+                        Grid.Row="10"
+                        Grid.Column="0"
+                        Grid.ColumnSpan="2"
+                        Padding="2"
+                        Click="CSVLoad"
+                        Content="csv読み込み" />
+
+                </Grid>
+
+                <!--  実行関係  -->
+                <Grid Grid.Row="1" Grid.Column="0">
+                    <!--  各グリッド  -->
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <!--  外部Application  -->
+                    <!--<Label
+                        Grid.Row="9"
+                        Grid.Column="0"
+                        Margin="5"
+                        Content="exe FolderPath" />
+                    <Button
+                        Grid.Row="9"
+                        Grid.Column="1"
+                        Margin="4"
+                        Click="Button_Click_2"
+                        Content="exe File Reference" />
+                    -->
+                    <!--  入力  -->
+                    <!--
+                    <TextBox
+                        x:Name="FolderPath"
+                        Grid.Row="10"
+                        Grid.Column="1"
+                        AcceptsReturn="True"
+                        Text="{Binding ExeFolderPath, UpdateSourceTrigger=PropertyChanged}"
+                        TextWrapping="Wrap" />
+                    <Button
+                        Grid.Row="11"
+                        Grid.Column="0"
+                        Grid.ColumnSpan="2"
+                        Padding="4"
+                        Click="Button_Click_1"
+                        Content="exe" />-->
+                </Grid>
             </Grid>
         </Border>
 
@@ -227,7 +286,10 @@
                 </Grid.RowDefinitions>
 
                 <!--  マップチップ表示部分  -->
-                <TabControl x:Name="myTab" Margin="1">
+                <TabControl
+                    x:Name="myTab"
+                    Margin="1"
+                    Background="Black">
                     <!--  タブ切り替え部  -->
                     <TabItem Header="MapTip">
                         <ListView
@@ -304,13 +366,16 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
                     <Label
                         Grid.Row="0"
                         Grid.Column="0"
+                        Margin="0,0,0,10"
                         HorizontalAlignment="Right"
-                        Content="ImageSelectIndex" />
+                        Content="ImageSelectIndex"
+                        Style="{StaticResource ColorLabel}" />
                     <Label
                         x:Name="MySelectIndex"
                         Grid.Row="0"

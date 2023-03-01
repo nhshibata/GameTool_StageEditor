@@ -47,13 +47,35 @@ namespace MapEditor
             }
         }
 
-        public void Write()
+        public List<List<string>> Load(string path)
+        {
+            List<List<string>> ret = new List<List<string>>();
+            StreamReader sr = new StreamReader(path);
+            {
+                while (!sr.EndOfStream)
+                {
+                    // 一行を読みこむ
+                    string line = sr.ReadLine();
+
+                    // 一行をカンマ毎に分けて配列に格納する
+                    string[] aStr = line.Split(',');
+                    ret.Add(new List<string>(aStr));
+
+                }
+                sr.Close();
+            }
+            return ret;
+        }
+
+        public bool Write()
         {
             // 保存先ファイルが存在するか
             if(!File.Exists(m_saveFilePath))
             {
-                return;
+                return false;
             }
+            if(m_aData.Count == 0)
+                return false;
 
             StreamWriter sw = new StreamWriter(m_saveFilePath);
             {
@@ -64,7 +86,7 @@ namespace MapEditor
                 }
             }
             sw.Close();
-
+            return true;
         }
 
 
