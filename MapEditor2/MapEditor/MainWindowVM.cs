@@ -36,6 +36,6 @@ namespace MapEditor
         public string ExeFolderPath { get { return tool.folderPath; } set { tool.folderPath = value; } }
         public string CSVFolderPath { get { return tool.csvFile; } set { tool.csvFile = value; } }
 
-        public bool BViewMode { get => ViewOperation.m_instance.m_bViewMode; set => ViewOperation.m_instance.m_bViewMode = value; }
+        public bool ViewMode { get => ViewOperation.m_instance.m_bViewMode; set => ViewOperation.m_instance.m_bViewMode = value; }
     }
 }

@@ -108,6 +108,7 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -119,28 +120,6 @@
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="texture\field.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="texture\forest.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="texture\house.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="texture\mountain.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="texture\water.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="texture\Character\Enemy_1.png" />
-    <Resource Include="texture\Character\Player.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="texture\Item\money_1.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
